@@ -1,0 +1,136 @@
+
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navigation.ejs') %>
+
+<style>
+    .card:hover {
+        background-color: #4cc9f0;
+        -webkit-box-shadow: 10px 10px 99px 6px rgba(76,201,240,1);
+        -moz-box-shadow: 10px 10px 99px 6px rgba(76,201,240,1);
+        box-shadow: 10px 10px 99px 6px rgba(76,201,240,1);
+    }
+</style>
+
+<div class="container">
+    <br>
+    <h3> Hi <%=user.name%>!</h3>
+    <!-- <h5> ID: <%=user.id%></h5> -->
+
+    <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+        <h1>All Notes</h1>
+        <!-- <pre><%= user %></pre> -->
+        <!-- <pre><%= notes %></pre> -->
+    <% } %>
+
+    <% if (user.name != 'Guest') { %>
+        <div class="m-2">
+            <a href="/notes/order/<%=user.id%>" class="btn btn-success btn-block_ btn-sm_">Ready to order</a>
+        </div>    
+
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-borderless" id="table1">
+                    <thead>
+                        <tr>
+                            <th scope="col">Item</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">
+                                <button type="button" class="btn btn-success" onclick="addRow()">Add</button>
+                                <button type="button" class="btn btn-danger" onclick="removeRow()">Remove</button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text"></td>
+                            <td><input type="text"></td>
+                            <td><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"><label class="form-check-label" for="flexCheckChecked">Remove This one!</label></div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+    
+    <% } %>
+
+    <div class="row">
+        <% notes.forEach(note => { %>
+            <div class="col-md-3 p-2">
+
+                <div class="card bg-info">
+
+                    <div class="card-body">
+                        <h4 class="card-title d-flex justify-content-between align-items-center">
+                            <%= note.title %>
+                            <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+                                <a href="/note/edit/<%= note._id %> "><i class="fas fa-edit"></i></a>
+                            <% } %>
+                        </h4>
+                    </div>
+
+                    <div class="card-body p-1 m-2">
+                        <img
+                            <% if (note.path) { %>
+                                src="<%= note.path %>"
+                            <% } %>
+                            <% if (!note.path) { %>
+                                src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659980382/Logo_Oogway_r7m6dv.png"
+                            <% } %>
+                            class="img-fluid rounded-start my-1 card border-primary"
+                            alt="Oogway Logo"
+                            onclick="window.open('<%= note.path %>');"
+                        />
+                        <p><%= note.description %></p>
+                    </div>
+
+                    <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+                        <form action="/notes/delete/<%=note._id%>?_method=delete" method="post" style="padding: 10px;">
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="btn btn-danger btn-block btn-sm">Delete</button>
+                        </form>
+                    <% } %>
+
+                    <!-- <% if (user.name != 'Guest') { %>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="How many?" aria-label="quantity" aria-describedby="btnAdd">
+                            <button class="btn btn-success" type="button" id="btnAdd">Add</button>
+                        </div>
+                    <% } %> -->
+
+                </div>
+            </div>
+        <% }) %>          
+    </div>
+</div>
+
+<script>
+    function addRow() {
+        var tbodyRef = document.getElementById('table1').getElementsByTagName('tbody')[0];
+        var newRow = tbodyRef.insertRow();
+        newRow.innerHTML='<td><input type="text"></td>'
+        var newCell = newRow.insertCell();
+        newCell.innerHTML = '<td><input type="text"></td>'
+        var newCell = newRow.insertCell();
+        newCell.innerHTML = '<td><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"><label class="form-check-label" for="flexCheckChecked">Remove This one!</label></div></td>'
+    }
+
+    function removeRow() {
+        var table = document.getElementById('table1');
+        var rowCount = table.rows.length;
+        let rowstodelete = []
+
+        for (i=0; i<=rowCount+1; i++){
+
+            for (i=1; i<rowCount; i++){
+                let chkBox = document.getElementsByTagName('tr')[i].cells[2].childNodes[0].childNodes[0].checked
+                if (chkBox == true){
+                    //rowstodelete.push(i)
+                    //console.log(i)
+                    table.deleteRow(i);
+                }
+            }
+        }
+    }
+</script>
+
+<%- include ('partials/footer.ejs') %>

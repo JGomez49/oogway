@@ -1,0 +1,36 @@
+{{!-- https://www.youtube.com/watch?v=PQL_iwLKnRg --}}
+
+{{!-- note es enviado desde note.controller.js -> "res.render('notes/edit-note', {note:note});" --}}
+
+<div class="col -md-4 mx-auto">
+
+    <div class="card">
+
+        <div class="card-header">
+            <h2>Edit Client</h2>
+        </div>
+
+        <div class="card-body">
+
+            <form action="/clients/edit/{{client.id}}?_method=put" method="post">
+            
+                <input type="hidden" name="_method" value="put">
+
+                <div class="form-group">
+                    <input type="text" name="First_Name" class="form-control" value="{{client.First_Name}}">
+                </div>
+
+                <div class="form-group">
+                    <input type="text" name="Last_Name" class="form-control" value="{{client.Last_Name}}">
+                </div>
+
+                <div class="form-group">
+                    <button class="btn btn-primary btn-block" type="submit">
+                        Save
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navigation.ejs') %>
+
+<div class="col-md-4 mx-auto my-4">
+
+    <% if (user == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+        <pre>user: <%= user %> </pre>
+        <pre><%= note %></pre>
+    <% } %>
+
+    <div class="col -md-6 mx-auto">
+        <div class="card">
+
+            <div class="card-header bg-info">
+                <h2>Edit Note</h2>
+            </div>
+
+            <div class="card-body bg-secondary">
+
+                <form action="/note/edit/<%=note._id%>?_method=put" method="post">
+                    
+                    <input type="hidden" name="_method" value="put">
+
+                    <div class="form-group">
+                        <input type="text" name="title" class="form-control" value="<%=note.title%>">
+                    </div>
+                    <br>
+
+                    <div class="form-group">
+                        <textarea name="description" class="form-control"><%=note.description%></textarea>
+                    </div>
+                    <br>
+
+                    <div class="form-group">
+                        <button class="btn btn-success btn-block" type="submit">Save</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ('partials/footer.ejs') %>

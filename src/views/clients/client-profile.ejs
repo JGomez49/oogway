@@ -1,0 +1,849 @@
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.14.1/dist/xlsx.full.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.2/dist/chart.min.js" integrity="sha256-srZ7wC4CLlY0F9UFji68dTwYJQ5o93Quq2+iyQ4gH/I=" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+
+    <style>.btn{width: 150px;}</style>
+
+{{!-- =================== Start of "HTML" ====================== --}}
+
+
+{{!-- <pre>{{torques}}</pre> --}}
+{{!-- <pre>{{user}}</pre> --}}
+
+<h5>{{client.Last_Name}}</h5>
+
+<div class="main">
+
+  <div class="container">
+
+    <div id="tester" width="window.innerWidth" height="window.innerHeight"></div>
+
+    {{!-- <div><canvas id="myChart" width="400" height="200"></canvas></div> --}}
+
+    <div class="rows">
+
+      <div id="liveAlertPlaceholder"></div>
+
+      {{#if client.auth}}
+        {{!-- <pre>{{client}}</pre> --}}
+        <div class="accordion" id="accordionManualMode">
+          <div class="accordion-item">
+            <h5 class="accordion-header" id="headingManualMode">
+              <button class="accordion-button collapsed btn btn-outline-primary" type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#collapseManualMode" aria-expanded="false" 
+                aria-controls="collapseManualMode">
+                Manual Mode
+              </button>
+            </h5>
+            <div id="collapseManualMode" class="accordion-collapse collapse" aria-labelledby="headingManualMode" data-bs-parent="#accordionManualMode">
+              <div class="accordion-body">
+                <div class="p-2">
+                  <form enctype="multipart/form-data" style="background-color: black">
+                    <input id="upload" type=file  name="files[]">
+                  </form>
+                  <textarea class="form-control" rows=10 cols=120 id="xlx_json" style="background-color: black;"></textarea>
+                  <a href="/clients/addtnd/{{client._id}}" type="button" class="btn btn-outline-primary my-2">New Point</a>
+                  <a type="button" class="btn btn-outline-primary my-2" onclick="graficarDesdeTabla()">Plot</a>
+                  <button type="button" class="btn btn-primary my-2" id="btnScript">Script</button>
+                  <a href="/clients/deletemodel/{{client.Last_Name}}" type="button" class="btn btn-outline-primary my-2">Delete Model</a>
+                  <a href="/clients/deleteedr/{{client.Last_Name}}" type="button" class="btn btn-outline-primary my-2">Delete EDR</a>
+                  <div id="wrapper"><input type="file" id="input-excel"/></div>
+                </div> 
+              </div>
+            </div>
+          </div>
+        </div>       
+      {{/if}}   
+
+
+
+      <div class="accordion" id="accordionTND">
+
+        <div class="accordion-item">
+          <h5 class="accordion-header" id="headingTNDModel">
+            <button class="accordion-button collapsed btn btn-outline-primary" type="button" 
+              data-bs-toggle="collapse" 
+              data-bs-target="#collapseTNDModel" aria-expanded="false" 
+              aria-controls="collapseTNDModel">
+              T&D Model
+            </button>
+          </h5>
+          <div id="collapseTNDModel" class="accordion-collapse collapse" aria-labelledby="headingTNDModel" data-bs-parent="#accordionTND">
+            <div class="accordion-body">
+              <h5>T&D Model</h5> 
+              <table id="tabla1" class="table table-hover table-sm" style="width:100%">
+                <thead>
+                  <tr>
+                    <th scope="col">MD</th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkTripin" checked>
+                      Trip-In
+                      </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkTripout" checked>
+                      Trip-Out
+                      </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkRotaton" checked>
+                      Rotat-On
+                    </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkSlide" checked>
+                      Slide
+                    </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkRotatoff" checked>
+                      Rotat-Off
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each torques}}
+                    {{#if modelpoint}}
+                      <tr>
+                        <td>{{MD}}</td>
+                        <td>{{tripin}}</td>
+                        <td>{{tripout}}</td>
+                        <td>{{rotaton}}</td>
+                        <td>{{slide}}</td>
+                        <td>{{rotatoff}}</td>
+                      </tr>              
+                    {{/if}}
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h5 class="accordion-header" id="headingMeasuredTND">
+            <button class="accordion-button collapsed btn btn-outline-primary" type="button" 
+              data-bs-toggle="collapse" 
+              data-bs-target="#collapseMeasuredTND" aria-expanded="false" 
+              aria-controls="collapseMeasuredTND">
+              Measured T&D
+            </button>
+          </h5>
+          <div id="collapseMeasuredTND" class="accordion-collapse collapse" aria-labelledby="headingMeasuredTND" data-bs-parent="#accordionTND">
+            <div class="accordion-body">
+              <h5>Measured T&D</h5>
+              <table id="tabla2" class="table table-light table-hover table-sm" style="width:100%">
+                <thead>
+                  <tr>
+                    <th scope="col">MD</th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkTripin2" checked>
+                      Trip-In
+                      </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkTripout2" checked>
+                      Trip-Out
+                      </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkRotaton2" checked>
+                      Rotat-On
+                    </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkSlide2" checked>
+                      Slide
+                    </th>
+                    <th scope="col">
+                      <input class="form-check-input" type="checkbox" value="" id="checkRotatoff2" checked>
+                      Rotat-Off
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each torques}}
+                    {{#if EDRpoint}}
+                      <tr>
+                        <td>{{MD}}</td>
+                        <td>{{tripin}}</td>
+                        <td>{{tripout}}</td>
+                        <td>{{rotaton}}</td>
+                        <td>{{slide}}</td>
+                        <td>{{rotatoff}}</td>
+                      </tr>              
+                    {{/if}}
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{{!-- =================== End of "HTML" ====================== --}}
+
+
+
+
+<script>
+
+  let cTripin = document.getElementById("checkTripin");
+  cTripin.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cTripout = document.getElementById("checkTripout");
+  cTripout.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cRotaton = document.getElementById("checkRotaton");
+  cRotaton.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cSlide = document.getElementById("checkSlide");
+  cSlide.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cRotatoff = document.getElementById("checkRotatoff");
+  cRotatoff.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+
+
+  let cTripin2 = document.getElementById("checkTripin2");
+  cTripin2.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cTripout2 = document.getElementById("checkTripout2");
+  cTripout2.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cRotaton2 = document.getElementById("checkRotaton2");
+  cRotaton2.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cSlide2 = document.getElementById("checkSlide2");
+  cSlide2.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+  let cRotatoff2 = document.getElementById("checkRotatoff2");
+  cRotatoff2.addEventListener('change', function(e) {graficarDesdeTabla();});
+
+</script>
+
+
+<script>
+  function graficar(objeto){
+    let datosX=[];
+    let slideY=[];
+    let tripinY=[];
+    let tripoutY=[];
+    let rotatonY=[];
+    let rotatoffY=[];
+
+    let edrSlideY=[];
+    let edrtripinY=[];
+    let edrtripoutY=[];
+    let edrrotatonY=[];
+    let edrrotatoffY=[];
+
+    let checkSlide = document.getElementById('checkSlide').checked
+    let checkTripin = document.getElementById('checkTripin').checked
+    let checkTripout = document.getElementById('checkTripout').checked
+    let checkRotaton = document.getElementById('checkRotaton').checked
+    let checkRotatoff = document.getElementById('checkRotatoff').checked
+
+    let checkSlide2 = document.getElementById('checkSlide2').checked
+    let checkTripin2 = document.getElementById('checkTripin2').checked
+    let checkTripout2 = document.getElementById('checkTripout2').checked
+    let checkRotaton2 = document.getElementById('checkRotaton2').checked
+    let checkRotatoff2 = document.getElementById('checkRotatoff2').checked
+
+    function interpolate(x, x1, x2, y1, y2){
+      y = y1 + ((y2 - y1)/(x2 - x1))*(x - x1)
+      return y
+    }
+
+    for (let i in objeto) {
+      datosX.push(objeto[i].MD);
+      //Model data
+      if(checkSlide == true){
+          slideY.push(objeto[i].SLIDE);
+      }
+      if(checkTripin == true){
+        tripinY.push(objeto[i].TRIPIN);
+      }
+      if(checkTripout == true){
+        tripoutY.push(objeto[i].TRIPOUT);
+      }
+      if(checkRotaton == true){
+        rotatonY.push(objeto[i].ROTATON);
+      }
+      if(checkRotatoff == true){
+        rotatoffY.push(objeto[i].ROTATOFF);
+      }
+      //EDR data
+      if(checkSlide2 == true){
+        edrSlideY.push(objeto[i].EDR_SLIDE);
+      }
+      if(checkTripin2 == true){
+        edrtripinY.push(objeto[i].EDR_TRIPIN);
+      }
+      if(checkTripout2 == true){
+        edrtripoutY.push(objeto[i].EDR_TRIPOUT);
+      }
+      if(checkRotaton2 == true){
+        edrrotatonY.push(objeto[i].EDR_ROTATON);
+      }
+      if(checkRotatoff2 == true){
+        edrrotatoffY.push(objeto[i].EDR_ROTATOFF);
+      }
+    }
+
+
+    //--------------------Start: Graficar con Plotly-----------------------------
+    canvas = document.getElementById('tester');
+
+    // Model Line Plots
+
+    var trace1= {
+      name: 'Model Slide',
+      x: datosX,
+      y: slideY,
+      line: {
+        color: 'rgb(255, 0, 0)',
+        width: 2,
+      },
+      mode: 'lines',
+      connectgaps: true,
+      fill: 'none',
+    };
+
+    var trace2 = {
+      name: 'Model Trip-In',
+      x: datosX,
+      y: tripinY,
+      line: {
+        color: 'rgb(0, 255, 0)',
+        width: 2,
+      },
+      mode: 'lines',
+      connectgaps: true,
+    };
+
+    var trace3 = {
+      name: 'Model Trip-Out',
+      x: datosX,
+      y: tripoutY,
+      line: {
+        color: 'rgb(0, 0, 255)',
+        width: 2,
+      },
+      mode: 'lines',
+      connectgaps: true
+    };
+
+    var trace4 = {
+      name: 'Model ROT-ON',
+      x: datosX,
+      y: rotatonY,
+      line: {
+        color: 'rgb(255, 50, 255)',
+        width: 2,
+      },
+      mode: 'lines',
+      connectgaps: true
+    };
+
+    var trace5 = {
+      name: 'Model ROT-OFF',
+      x: datosX,
+      y: rotatoffY,
+      line: {
+        color: 'rgb(255, 255, 0)',
+        width: 2,
+      },
+      mode: 'lines',
+      connectgaps: true,
+    };
+
+    // EDR Scatter Plots
+
+    var trace6 = {
+      name: 'EDR Slide',
+      x: datosX,
+      y: edrSlideY,
+      mode: 'markers',
+      line: {
+        color: 'rgb(255,0,0)',
+        shape: 'vhv'
+      },
+      type: 'scatter',
+      marker: {
+        size: 2,
+      },
+    };
+
+    var trace7 = {
+      name: 'EDR Trip-In',
+      x: datosX,
+      y: edrtripinY,
+      mode: 'markers',
+      line: {
+        color: 'rgb(0,255,0)',
+        shape: 'vhv'
+      },
+      type: 'scatter',
+      marker: {
+        size: 2,
+      },
+    };
+
+    var trace8 = {
+      name: 'EDR Trip-Out',
+      x: datosX,
+      y: edrtripoutY,
+      mode: 'markers',
+      line: {
+        color: 'rgb(0,0,255)',
+        shape: 'vhv'
+      },
+      type: 'scatter',
+      marker: {
+        size: 2,
+      },
+    };
+
+    var trace9 = {
+      name: 'EDR Rot-On',
+      x: datosX,
+      y: edrrotatonY,
+      mode: 'markers',
+      line: {
+        color: 'rgb(255,50,255)',
+        shape: 'vhv'
+      },
+      type: 'scatter',
+      marker: {
+        size: 2,
+      },
+    };
+
+    var trace10 = {
+      name: 'EDR Rot-On',
+      x: datosX,
+      y: edrrotatoffY,
+      mode: 'markers',
+      line: {
+        color: 'rgb(255,255,0)',
+        shape: 'vhv'
+      },
+      type: 'scatter',
+      marker: {
+        size: 2,
+      },
+    };
+
+    var data = [trace1, trace2, trace3, trace4, trace5, trace6, trace7, trace8, trace9, trace10];
+
+    var layout = {
+      //title: 'Connect the Gaps Between Data',
+      showlegend: true,
+	    legend: {
+        "orientation": "h",
+        x: 0,
+        y: 10,
+        font: {
+          family: 'sans-serif',
+          size: 12,
+          color: 'rgb(255,255,255)',
+        },
+      },
+      plot_bgcolor: 'black',
+      paper_bgcolor: 'black',
+      xaxis: {
+        title: {
+          text: 'MD (m)',
+          font: {
+            //family: 'Courier New, monospace',
+            //size: 18,
+            color: '#7f7f7f'
+          },
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'HKLD (kadN)',
+          font: {
+            //family: 'Courier New, monospace',
+            //size: 18,
+            color: '#7f7f7f'
+          }
+        }
+      }
+    };
+    Plotly.newPlot(canvas, data, layout);
+    //--------------------End of: Graficar con Plotly----------------------------
+
+
+    //--------------------Start: Graficar con ChartJS----------------------------
+    /*
+    let chartStatus = Chart.getChart("myChart");
+    if (chartStatus != undefined) {
+      chartStatus.destroy();
+    }
+    let ctx = document.getElementById('myChart').getContext('2d');
+    let myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: datosX,
+          datasets: [
+            {
+              label: 'Slide',
+              type: 'line',
+              //labels: datosX,
+              data: slideY,
+              borderColor: 'rgb(255, 51, 51)',
+              backgroundColor: 'rgb(255, 51, 51)',
+              pointRadius: 0.5,
+            },
+            {
+              label: 'Trip-In',
+              type: 'line',
+              //labels: datosX,
+              data: tripinY,
+              borderColor: 'rgb(204, 102, 0)',
+              backgroundColor: 'rgb(204, 102, 0)',
+              pointRadius: 0.5,
+            },
+            {
+              label: 'Trip-Out',
+              type: 'line',
+              //labels: datosX,
+              data: tripoutY,
+              borderColor: 'rgb(0, 102, 204)',
+              backgroundColor: 'rgb(0, 102, 204)',
+              pointRadius: 0.5,
+            },
+            {
+              label: 'Rotating On',
+              type: 'line',
+              //labels: datosX,
+              data: rotatonY,
+              borderColor: 'rgb(0, 204, 0)',
+              backgroundColor: 'rgb(0, 204, 0)',
+              pointRadius: 0.5,
+            },
+            {
+              label: 'Rotating Off',
+              type: 'line',
+              //labels: datosX,
+              data: rotatoffY,
+              borderColor: 'rgb(255, 255, 51)',
+              backgroundColor: 'rgb(255, 255, 51)',
+              pointRadius: 0.5,
+            },
+
+            {
+              label: 'EDR_Slide',
+              type: 'bar',
+              //labels: [100, 800],
+              data: edrSlideY,
+              borderColor: 'rgb(0, 255, 255)',
+              backgroundColor: 'rgb(0, 255, 255)',
+              pointRadius: 0.5,
+            },
+          ]
+      },
+      options: {
+        tension: 0.4,
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+          }
+        },
+        animations: {
+          radius: {
+            duration: 400,
+            easing: 'linear',
+            loop: (context) => context.active
+          }
+        },
+        hoverRadius: 12,
+        hoverBackgroundColor: 'yellow',
+        interaction: {
+          mode: 'nearest',
+          intersect: false,
+          axis: 'x'
+        },
+        plugins:{
+          legend:{
+            display: false,
+          },
+        },
+
+      }
+    });
+    */
+    //--------------------End of: Graficar con ChartJS----------------------------
+  }
+</script>
+
+
+<script>
+  function graficarDesdeTabla(){
+    let datosX=[];
+    let slideY=[];
+    let tripinY=[];
+    let tripoutY=[];
+    let rotatonY=[];
+    let rotatoffY=[];
+
+    let objetoJson={};
+    let vectorJson=[];
+
+    const tabla1 = document.getElementById('tabla1')
+    let fil = tabla1.querySelector('tbody').querySelectorAll('tr')
+    for(let i=0; i<fil.length; i++){
+      let MD =  Number(fil[i].cells[0].innerHTML)
+      let slide = Number(fil[i].cells[4].innerHTML)
+      let tripin = Number(fil[i].cells[1].innerHTML)
+      let tripout = Number(fil[i].cells[2].innerHTML)
+      let rotaton = Number(fil[i].cells[3].innerHTML)
+      let rotatoff = Number(fil[i].cells[5].innerHTML)
+      objetoJson.MD = MD
+      objetoJson.SLIDE = slide
+      objetoJson.TRIPIN = tripin
+      objetoJson.TRIPOUT = tripout
+      objetoJson.ROTATON = rotaton
+      objetoJson.ROTATOFF = rotatoff
+      vectorJson.push(objetoJson)
+      objetoJson={}
+    }
+
+    const tabla2 = document.getElementById('tabla2')
+    fil = tabla2.querySelector('tbody').querySelectorAll('tr')
+
+    for(let i=0; i<fil.length; i++){
+
+      if( (fil[i].cells[1].innerHTML != '') || (fil[i].cells[2].innerHTML != '') || 
+        (fil[i].cells[3].innerHTML != '') || (fil[i].cells[4].innerHTML != '') || 
+        (fil[i].cells[5].innerHTML != '') ){
+
+        objetoJson.MD =  Number(fil[i].cells[0].innerHTML)
+
+        if (fil[i].cells[4].innerHTML != ''){
+          objetoJson.EDR_SLIDE = Number(fil[i].cells[4].innerHTML)
+        }
+
+        if (fil[i].cells[1].innerHTML != ''){
+          objetoJson.EDR_TRIPIN = Number(fil[i].cells[1].innerHTML)
+        }
+
+        if (fil[i].cells[2].innerHTML != ''){
+          objetoJson.EDR_TRIPOUT = Number(fil[i].cells[2].innerHTML)
+        }
+
+        if (fil[i].cells[3].innerHTML != ''){
+          objetoJson.EDR_ROTATON = Number(fil[i].cells[3].innerHTML)
+        }
+
+        if (fil[i].cells[5].innerHTML != ''){
+          objetoJson.EDR_ROTATOFF = Number(fil[i].cells[5].innerHTML)
+        }
+
+        vectorJson.push(objetoJson)
+        objetoJson={}
+
+      } //end if
+    } //end for
+
+    function mySort(obj, key) {
+      obj.sort(function(a, b) {
+        return (a[key] > b[key]) ? 1 : ((a[key] < b[key]) ? -1 : 0);
+      });
+    }
+    mySort(vectorJson, 'MD');
+
+    console.log('>> vectorJson:')
+    console.log(vectorJson)
+
+    graficar(vectorJson)
+  }
+</script>
+
+
+<script>
+  window.addEventListener('load', function() { 
+    graficarDesdeTabla();
+  }, false);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{{!-- ===================== Start of: Excel to Table ===================== --}}
+<script>
+    $('#input-excel').change(function(e){
+      var reader = new FileReader();
+      reader.readAsArrayBuffer(e.target.files[0]);
+      reader.onload = function(e) {
+        var data = new Uint8Array(reader.result);
+        var wb = XLSX.read(data,{type:'array'});
+        var htmlstr = XLSX.write(wb,{
+          sheet:"Sheet1", 
+          type:'binary',
+          bookType:'html'
+        });
+        $('#wrapper')[0].innerHTML += htmlstr;
+      }
+    });
+</script>
+
+<script>
+  if (document.getElementById('btnScript')){
+    const btnScript = document.getElementById('btnScript')
+    btnScript.addEventListener('click', () => {
+        let tabla = document.getElementsByTagName('table')[0]
+        const datos = tabla.querySelectorAll('td');
+        const celdas = tabla.querySelectorAll('td').length;
+        const filas = tabla.querySelectorAll('tr').length;
+        const col = celdas/filas;
+
+        console.log("filas: "+ filas + ". Columnas: " + col);
+
+        var vdatos = []; //todos los datos de la tabla individuales
+        for (let i = 0; i < datos.length; i++) {
+            vdatos.push(datos[i].innerHTML);
+        }
+        
+        var vfilas = []; //arreglo de filas
+        var vrow = []; //guarda cada fila
+        var k = 0; //puntero de todos los datos        
+
+        for (let i = 0; i < filas; i++) {
+            for (let j = 0; j < col; j++) {
+                vrow[j]=(vdatos[k]);
+                k=k+1
+            }
+            vfilas[i]=(vrow);
+            vrow=[];
+        }
+
+        var vjson = [];
+        for (let i = 0; i < filas; i++) {
+            vjson[i] = (JSON.stringify({
+                COL01: (vfilas[i])[0], 
+                COL02: (vfilas[i])[1],
+                COL03: (vfilas[i])[2],
+                COL04: (vfilas[i])[3],
+                COL05: (vfilas[i])[4],
+                COL06: (vfilas[i])[5],
+                COL07: (vfilas[i])[6],
+                COL08: (vfilas[i])[7]
+            }));
+        }
+
+        for (let i = 1; i < filas; i++) {
+            console.log(vjson[i]);  
+        }
+    })
+  }
+</script>
+
+
+{{!-- ===================== End of: Excel to Table ===================== --}}
+
+
+
+{{!-- ===================== Start of: Excel to JSON===================== --}}
+<script>
+  var ExcelToJSON = function() {
+    this.parseExcel = function(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var workbook = XLSX.read(data, {
+          type: 'binary'
+        });
+        workbook.SheetNames.forEach(function(sheetName) {
+          // Here is the object
+          var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+          var json_object = JSON.stringify(XL_row_object);
+
+          console.log("Json: ");
+          console.log(JSON.parse(json_object));
+          //Para mostar el objeto JSON en el textarea:
+          jQuery( '#xlx_json' ).val(json_object);
+
+          mostarentabla(XL_row_object);
+        })
+      };
+      reader.onerror = function(ex) {
+        console.log(ex);
+      };
+      reader.readAsBinaryString(file);
+    };
+  };    
+
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    var xl2json = new ExcelToJSON();
+    xl2json.parseExcel(files[0]);
+  }
+
+  function mostarentabla(objeto){
+    var table = document.getElementById('tabla1');    
+    for (let i in objeto) {
+      row = table.insertRow();
+
+      COL01 = row.insertCell();
+      COL02 = row.insertCell();
+      COL03 = row.insertCell();
+      COL04 = row.insertCell();
+      COL05 = row.insertCell();
+      COL06 = row.insertCell();
+
+      COL01.innerHTML = Math.round(objeto[i].MD);
+      COL02.innerHTML = objeto[i].TRIPIN;
+      COL03.innerHTML = objeto[i].TRIPOUT;
+      COL04.innerHTML = objeto[i].ROTATON;
+      COL05.innerHTML = objeto[i].SLIDE;
+      COL06.innerHTML = objeto[i].ROTATOFF;
+    }
+    graficar(objeto)
+  }
+</script>
+
+<script>
+    document.getElementById('upload').addEventListener('change', handleFileSelect, false);
+</script>
+{{!-- ===================== End of: Excel to JSON===================== --}}
+

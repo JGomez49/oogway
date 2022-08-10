@@ -1,0 +1,44 @@
+
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navigation.ejs') %>
+
+    <div class="container my-4 col-md-4 mx-auto">
+
+        <h1>Order from <%=user.name%></h1>
+
+        <form action="/notes/email/<%=user._id%>" method="POST" enctype="multipart/form-data">
+
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com" value="<%=user.email%>">
+            </div>
+
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Details of your order</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="4"></textarea>
+            </div>
+
+            <!-- <div class="card mb-3" style="background-color: #483D8B;">
+                <div class="card-body">
+                  <p class="card-text">Upload your idea or design</p>
+                    <div class="input-group mb-3">
+                        <input
+                        type="file"
+                        name="image"
+                        class="form-control"
+                        id="inputGroupFile02"
+                        />
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="d-grid gap-2 d-md-block mb-2">
+                <button class="btn btn-success" type="submit">Send</button>
+                <a class="btn btn-danger me-md-2" href="/notes">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
+
+<%- include ('partials/footer.ejs') %>

@@ -1,0 +1,46 @@
+
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navigation.ejs') %>
+
+<h1>All Notes</h1>
+<% if (user == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+    <pre><%= user %> </pre>
+    <pre><%= notes %></pre>
+<% } %>
+
+
+<div class="row">
+    <% notes.forEach(note => { %>
+        <div class="col-md-3 p-2">
+            <div class="card">
+
+                <div class="card-body">
+                    <h4 class="card-title d-flex justify-content-between align-items-center">
+                        title <a href="/notes/edit/<%= note._id %>"><i class="fas fa-edit"></i></a>
+                    </h4>
+                </div>
+
+                <div class="card-body p-4">
+                    <img
+                            src="<%= note.path %>"
+                            class="img-fluid rounded-start my-1 card border-primary"
+                            alt="..."
+                            onclick="window.open('<%= note.path %>');"
+                        />
+                    <p><%= note.description %></p>
+                </div>
+
+                <form action="/notes/delete/{{_id}}?_method=delete" method="post" style="padding: 10px;">
+                    <input type="hidden" name="_method" value="delete">
+                    <button 
+                        type="submit" 
+                        class="btn btn-danger btn-block btn-sm">Delete
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    <% }) %>           
+</div>
+
+<%- include ('partials/footer.ejs') %>

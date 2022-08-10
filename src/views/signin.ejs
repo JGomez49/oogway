@@ -1,0 +1,47 @@
+
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navigation.ejs') %>
+
+<div class="row my-4">
+    <div class="col-md-3 mx-auto my-4">        
+        <div class="card bg-primary">
+
+            <div class="card-header bg-info">
+                <h4>Account Login</h4>
+            </div>
+
+            <img src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659980382/Logo_Oogway_r7m6dv.png"
+                class="rounded-circle_ mx-auto d-block m-4" width="70%">
+                
+            <div class="card-body">
+
+                <form action="/users/signin" method="post">
+
+                    <div class="form-group">
+                        <input type="email" class="form-control" name="email" placeholder="Email">
+                    </div>
+                    <br>
+
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    </div>
+                    <br>
+
+                    <button class="btn btn-success btn-block">
+                        OK
+                    </button>
+
+                    <a type="button" class="btn btn-info" href="/notes/guest">Enter as a Guest</a>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row my-4 col-md-3 mx-auto">
+    <img src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659989982/maple_cyl6xr.png" style="height: 30%; width:30% ">
+</div>
+
+<%- include ('partials/footer.ejs') %>

@@ -1,0 +1,110 @@
+
+<pre>{{client}}</pre>
+
+<div class="col-md-6 mx-auto">
+    <div class="card text-center">
+
+        <div class="card-header">
+            <h3>New Torque and Drag Point</h3>
+            <h6>{{client.Last_Name}}</h6>
+            <h6>{{client._id}}</h6>
+        </div>
+
+        <div class="card-body">
+
+            <form action="/clients/newtnd/{{client._id}}" method="post">
+
+                <div class="form-group">
+
+                    <input 
+                        type="text" 
+                        name="company"
+                        class="form-control"
+                        placeholder="Company"
+                        value='{{client.First_Name}}'
+                    >
+                    <br>
+
+                    <input
+                        type="text" 
+                        name="well"
+                        class="form-control"
+                        placeholder="Well"
+                        value='{{client.Last_Name}}'
+                    >
+                    <br>
+
+                    <input 
+                        type="number" 
+                        name="MD"
+                        class="form-control"
+                        placeholder="MD"
+                        autofocus
+                    >
+                    <br>
+
+                    <input 
+                        type="number" 
+                        name="slide"
+                        class="form-control"
+                        placeholder="Slide"
+                    >
+                    <br>
+
+                    <input 
+                        type="number" 
+                        name="rotaton"
+                        class="form-control"
+                        placeholder="Rotate On"
+                    >
+                    <br>
+
+                    <input 
+                        type="number" 
+                        name="rotatoff"
+                        class="form-control"
+                        placeholder="Rotate Off"
+                    >
+                    <br>
+
+                    <input 
+                        type="number" 
+                        name="tripin"
+                        class="form-control"
+                        placeholder="Trip In"
+                    >
+                    <br>
+
+                    <input 
+                        type="number" 
+                        name="tripout"
+                        class="form-control"
+                        placeholder="Trip Off"
+                    >
+                    <br>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="EDR" name="type" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">EDR Point</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="model" name="type" id="flexRadioDefault2" checked>
+                        <label class="form-check-label" for="flexRadioDefault2">Model Point</label>
+                    </div>
+                    <br>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-block">
+                            save
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

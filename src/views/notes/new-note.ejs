@@ -1,0 +1,55 @@
+
+<%- include ('partials/header.ejs') %>
+<%- include ('partials/navigation.ejs') %>
+
+<div class="col-md-4 mx-auto">
+
+    <div class="card text-center">
+
+        <div class="card-header">
+            <h3>New Note</h3>
+        </div>
+
+        <div class="card-body">
+
+            <!-- <form action="/notes/new-note" method="post"> -->
+            <form action="/notes/new-note" method="POST" enctype="multipart/form-data">
+
+                <div class="form-group">
+
+                    <input 
+                        type="text" 
+                        name="title"
+                        class="form-control"
+                        placeholder="Title"
+                        autofocus
+                    >
+                    <br>
+
+                    <textarea 
+                        name="description" 
+                        id="description" 
+                        placeholder="Description"
+                        class="form-control"
+                    ></textarea>
+                    <br>
+
+                    <!-- <div class="form-group">
+                        <button class="btn btn-primary btn-block">
+                            save
+                        </button>
+                    </div> -->
+
+                    <div class="d-grid gap-2 d-md-block mb-2">
+                        <button class="btn btn-primary" type="submit">Upload new note</button>
+                        <a class="btn btn-info me-md-2" href="/notes">Cancel</a>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<%- include ('partials/footer.ejs') %>
