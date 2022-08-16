@@ -11,6 +11,7 @@ const {
     deleteNote,
     renderOrder,
     sendOrder,
+
 } = require('../controllers/notes.controller');
 
 const {isAuthenticated} = require('../helpers/auth');
@@ -36,9 +37,12 @@ router.get('/notes/:guest', renderNotes);
 //Delete note
 router.delete('/notes/delete/:id', isAuthenticated, deleteNote);
 
+
+
 // Send Order
 router.get('/notes/order/:id', renderOrder);
 router.post('/notes/order/:id', sendOrder);
+
 
 
 

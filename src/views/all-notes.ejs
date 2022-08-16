@@ -3,7 +3,7 @@
 <%- include ('partials/navigation.ejs') %>
 
 <style>
-    .card:hover {
+    .carta:hover {
         background-color: #4cc9f0;
         -webkit-box-shadow: 10px 10px 99px 6px rgba(76,201,240,1);
         -moz-box-shadow: 10px 10px 99px 6px rgba(76,201,240,1);
@@ -18,47 +18,23 @@
 
     <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
         <h1>All Notes</h1>
-        <!-- <pre><%= user %></pre> -->
+        <pre><%= user.id %></pre>
+        <a class="btn btn-warning" href="/notes/add">New Note</a>
         <!-- <pre><%= notes %></pre> -->
-        <a href="/notes/add" class="btn btn-info">New item</a> 
+        <!-- <a href="/notes/add" class="btn btn-info">New item</a>  -->
     <% } %>
 
     <% if (user.name != 'Guest') { %>
         <div class="m-2">
-            <a href="/notes/order/<%=user.id%>" class="btn btn-success btn-block_ btn-sm_">Ready to order</a>
-        </div>    
-
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-borderless" id="table1">
-                    <thead>
-                        <tr>
-                            <th scope="col">Item</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">
-                                <button type="button" class="btn btn-success" onclick="addRow()">Add</button>
-                                <button type="button" class="btn btn-danger" onclick="removeRow()">Remove</button>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="text"></td>
-                            <td><input type="text"></td>
-                            <td><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"><label class="form-check-label" for="flexCheckChecked">Remove This one!</label></div></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div> 
-    
+            <!-- <a href="/notes/order/<%=user.id%>" class="btn btn-success btn-block_ btn-sm_">Ready to order</a> -->
+        </div>
     <% } %>
 
     <div class="row">
         <% notes.forEach(note => { %>
             <div class="col-md-3 p-2">
 
-                <div class="card bg-info">
+                <div class="card bg-info carta" id="<%= note._id %>">
 
                     <div class="card-body">
                         <h4 class="card-title d-flex justify-content-between align-items-center">
@@ -69,7 +45,7 @@
                         </h4>
                     </div>
 
-                    <div class="card-body p-1 m-2">
+                    <div class="p-1 m-2">
                         <img
                             <% if (note.path) { %>
                                 src="<%= note.path %>"
@@ -81,8 +57,12 @@
                             alt="Oogway Logo"
                             onclick="window.open('<%= note.path %>');"
                         />
-                        <p><%= note.description %></p>
+                        <p><%= note.description %></p> 
                     </div>
+
+                    <% if (user.name != 'Guest') { %>
+                        <a class="btn btn-success m-4 btn-add" id="<%= note._id %>">add</a>
+                    <% } %>
 
                     <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
                         <form action="/notes/delete/<%=note._id%>?_method=delete" method="post" style="padding: 10px;">
@@ -100,38 +80,126 @@
 
                 </div>
             </div>
-        <% }) %>          
+        <% }) %> 
+        
+        <% if (user.name != 'Guest') { %>
+            <div class="card text-center">
+                <div class="card-header">Shopping Cart</div>
+                <div class="card-body">
+                    <!-- <h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> -->
+                    <table class="table table-success table-striped" id="table-cart">
+                        <thead>
+                            <tr>
+                                <th scope="col">Product</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr></tr>
+                        </tbody>
+                    </table>
+                    <a href="/notes" class="btn btn-success" id="btnCheckOut">Check Out</a>
+                    <a href="/notes" class="btn btn-danger" id="btnEmptyCar">Empty my cart</a>
+                </div>
+                <!-- <div class="card-footer text-muted">2 days ago</div> -->
+            </div>
+        <% } %> 
+
     </div>
 </div>
 
+
+
 <script>
-    function addRow() {
-        var tbodyRef = document.getElementById('table1').getElementsByTagName('tbody')[0];
-        var newRow = tbodyRef.insertRow();
-        newRow.innerHTML='<td><input type="text"></td>'
-        var newCell = newRow.insertCell();
-        newCell.innerHTML = '<td><input type="text"></td>'
-        var newCell = newRow.insertCell();
-        newCell.innerHTML = '<td><div class="form-check"><input class="form-check-input" type="checkbox" value="" id="flexCheckChecked"><label class="form-check-label" for="flexCheckChecked">Remove This one!</label></div></td>'
+    if(document.getElementById('btnCheckOut')){
+        let btnCheckOut = document.getElementById('btnCheckOut')
+        btnCheckOut.hidden = true
     }
+    if(document.getElementById('btnEmptyCar')){
+        let btnEmptyCar = document.getElementById('btnEmptyCar')
+        btnEmptyCar.hidden = true
+    } 
 
-    function removeRow() {
-        var table = document.getElementById('table1');
-        var rowCount = table.rows.length;
-        let rowstodelete = []
+    let carrito = []
+    let item = {}
+    const container = document.querySelector(".row");
+    container.addEventListener("click", (e) => {
+        //console.log(e.target.classList.contains('btn-add')) 
 
-        for (i=0; i<=rowCount+1; i++){
-
-            for (i=1; i<rowCount; i++){
-                let chkBox = document.getElementsByTagName('tr')[i].cells[2].childNodes[0].childNodes[0].checked
-                if (chkBox == true){
-                    //rowstodelete.push(i)
-                    //console.log(i)
-                    table.deleteRow(i);
+        //Agregar al carrito
+        if (e.target.classList.contains("btn-add")) {
+            let itemId = e.target.id
+            let cartas = document.getElementsByClassName('carta')
+            for (let i = 0; i < cartas.length; i++) {
+                if (cartas[i].id == itemId){
+                    let itemName = cartas[i].getElementsByClassName('card-body')[0].innerText
+                    item.id = itemId
+                    item.name = itemName
+                    item.qty = 1
+                    let existe = 0
+                    for (let ii = 0; ii < carrito.length; ii++) {
+                        if(carrito[ii].id == item.id){
+                            existe = 1
+                            console.log('Item is already in the cart')
+                        }
+                    }
+                    if(existe == 0){
+                        carrito.push(item)
+                        item = {}
+                    }                    
                 }
             }
+            drawCart(carrito)
+        }
+
+        //Quitar del carrito
+        if (e.target.classList.contains("btn-remove")) {
+            let rowId = Number(e.target.id)
+            carrito.forEach(item => {
+                if(item.id == carrito[rowId].id){
+                    carrito.splice(rowId,1)
+                    drawCart(carrito)
+                }
+            });
+        }
+
+        e.stopPropagation()
+    })
+
+
+    function drawCart(carrito){
+        //console.log(carrito)
+        let table = document.getElementById('table-cart')
+        while(table.rows.length > 1) {
+            table.deleteRow(1);
+        }
+        for (let i = 0; i < carrito.length; i++) {
+            var row = table.insertRow(1);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+            cell1.innerHTML = carrito[i].name
+            cell2.innerHTML = carrito[i].id
+            cell3.innerHTML = '<input type="number" value=1 min=1>' 
+            cell4.innerHTML = '<a class="btn btn-danger btn-remove" id="">Remove</a>'   
+            cell4.querySelector('a').setAttribute("id", i) 
+        }
+
+        let btnCheckOut = document.getElementById('btnCheckOut')
+        let btnEmptyCar = document.getElementById('btnEmptyCar')
+        if(table.rows.length > 1){            
+            btnCheckOut.hidden = false
+            btnEmptyCar.hidden = false
+        }else{
+            btnCheckOut.hidden = true
+            btnEmptyCar.hidden = true
         }
     }
 </script>
+
 
 <%- include ('partials/footer.ejs') %>
