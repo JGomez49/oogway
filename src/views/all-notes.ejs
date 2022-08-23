@@ -1,6 +1,20 @@
 
+
 <%- include ('partials/header.ejs') %>
-<%- include ('partials/navigation.ejs') %>
+
+<div id="navbar">
+    <% if (user.name == 'Guest') { %>
+        <%- include ('partials/navigation_Guest.ejs') %>
+    <% } %>
+    
+    <% if (user.name != 'Guest') { %>
+        <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+            <%- include ('partials/navigation_Admin.ejs') %>
+        <% } else { %>
+            <%- include ('partials/navigation_Member.ejs') %>
+        <% } %>
+    <% } %>
+</div>
 
 <style>
     .carta:hover {
@@ -13,7 +27,7 @@
 
 <div class="container">
     <br>
-    <h3> Hi <%=user.name%>!</h3>
+    <h3 id="greeting"> Hi <%=user.name%>!</h3>
     <!-- <h5> ID: <%=user.id%></h5> -->
 
     <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
@@ -21,69 +35,85 @@
         <pre><%= user.id %></pre>
         <a class="btn btn-warning" href="/notes/add">New Note</a>
         <!-- <pre><%= notes %></pre> -->
-        <!-- <a href="/notes/add" class="btn btn-info">New item</a>  -->
-    <% } %>
-
-    <% if (user.name != 'Guest') { %>
-        <div class="m-2">
-            <!-- <a href="/notes/order/<%=user.id%>" class="btn btn-success btn-block_ btn-sm_">Ready to order</a> -->
-        </div>
     <% } %>
 
     <div class="row">
+
         <% notes.forEach(note => { %>
-            <div class="col-md-3 p-2">
 
-                <div class="card bg-info carta" id="<%= note._id %>">
+            <% if (note.title != 'Order') { %>
 
-                    <div class="card-body">
-                        <h4 class="card-title d-flex justify-content-between align-items-center">
-                            <%= note.title %>
-                            <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
-                                <a href="/note/edit/<%= note._id %> "><i class="fas fa-edit"></i></a>
-                            <% } %>
-                        </h4>
-                    </div>
+                <div class="col-md-3">
 
-                    <div class="p-1 m-2">
-                        <img
-                            <% if (note.path) { %>
-                                src="<%= note.path %>"
-                            <% } %>
-                            <% if (!note.path) { %>
-                                src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659980382/Logo_Oogway_r7m6dv.png"
-                            <% } %>
-                            class="img-fluid rounded-start my-1 card border-primary"
-                            alt="Oogway Logo"
-                            onclick="window.open('<%= note.path %>');"
-                        />
-                        <p><%= note.description %></p> 
-                    </div>
-
-                    <% if (user.name != 'Guest') { %>
-                        <a class="btn btn-success m-4 btn-add" id="<%= note._id %>">add</a>
-                    <% } %>
-
-                    <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
-                        <form action="/notes/delete/<%=note._id%>?_method=delete" method="post" style="padding: 10px;">
-                            <input type="hidden" name="_method" value="delete">
-                            <button type="submit" class="btn btn-danger btn-block btn-sm">Delete</button>
-                        </form>
-                    <% } %>
-
-                    <!-- <% if (user.name != 'Guest') { %>
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="How many?" aria-label="quantity" aria-describedby="btnAdd">
-                            <button class="btn btn-success" type="button" id="btnAdd">Add</button>
+                    <div class="card bg-info carta" id="<%= note._id %>">
+    
+                        <div class="card-body">
+                            <h4 class="card-title d-flex justify-content-between align-items-center">
+                                <%= note.title %>
+                                <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+                                    <a href="/note/edit/<%= note._id %> "><i class="fas fa-edit"></i></a>
+                                <% } %>
+                            </h4>
                         </div>
-                    <% } %> -->
+    
+                        <div class="p-2">
 
+                            <img
+                                <% if (note.path) { %>
+                                    src="<%= note.path %>"
+                                <% } %>
+                                <% if (!note.path) { %>
+                                    src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659980382/Logo_Oogway_r7m6dv.png"
+                                <% } %>
+                                class="img-fluid rounded-start my-1 card border-primary"
+                                alt="Oogway Logo"
+                                onclick="window.open('<%= note.path %>');"
+                            />
+
+                            <p><%= note.description %></p>
+
+                            <!-- <div>
+                                <input type="color" id="color1" name="color1" value="#e66465">
+                                <label for="color1">Color</label>
+                            </div> -->
+
+                            <% if (user.name != 'Guest') { %>
+                                <div class="my-2">
+                                    <button type="button" class="btn btn-primary btn-add-xs" id="<%= note._id %>">XS</button>
+                                    <button type="button" class="btn btn-primary btn-add-s" id="<%= note._id %>">S</button>
+                                    <button type="button" class="btn btn-primary btn-add-m" id="<%= note._id %>">M</button>
+                                    <button type="button" class="btn btn-primary btn-add-l" id="<%= note._id %>">L</button>
+                                    <button type="button" class="btn btn-primary btn-add-xl" id="<%= note._id %>">XL</button>
+                                </div>
+                            <% } %>
+                            
+                            <i class="fas fa-heart"></i>
+                            <i class="fas fa-address-card"></i>
+                            <i class="fas fa-cart-arrow-down"></i>
+                            <i class="fas fa-credit-card"></i>
+                            
+                        </div>
+    
+                        <!-- <% if (user.name != 'Guest') { %>
+                            <a class="btn btn-success mx-4 mb-2 btn-add" id="<%= note._id %>">add</a>
+                        <% } %> -->
+    
+                        <% if (user.id == '62ac0c8d2cbdfe3c9c4b4f38') { %>
+                            <form action="/notes/delete/<%=note._id%>?_method=delete" method="post" style="padding: 10px;">
+                                <input type="hidden" name="_method" value="delete">
+                                <button type="submit" class="btn btn-danger btn-block btn-sm">Delete</button>
+                            </form>
+                        <% } %>
+    
+                    </div>
                 </div>
-            </div>
+            <% } %>
+            
         <% }) %> 
+
         
         <% if (user.name != 'Guest') { %>
-            <div class="card text-center">
+            <div class="card text-center" id="cardCart" hidden="true">
                 <div class="card-header">Shopping Cart</div>
                 <div class="card-body">
                     <!-- <h5 class="card-title">Special title treatment</h5>
@@ -92,7 +122,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Product</th>
-                                <th scope="col">ID</th>
+                                <th scope="col">Color</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Remove</th>
                             </tr>
@@ -101,23 +131,56 @@
                             <tr></tr>
                         </tbody>
                     </table>
-                    <a href="/notes" class="btn btn-success" id="btnCheckOut">Check Out</a>
+                    <a class="btn btn-success" id="btnCheckOut" onclick=drawOrder()>Place Order</a>
+                    <!-- <a href="/notes/order/<%=user.id%>" class="btn btn-success" id="btnCheckOut">Check Out</a> -->
                     <a href="/notes" class="btn btn-danger" id="btnEmptyCar">Empty my cart</a>
                 </div>
                 <!-- <div class="card-footer text-muted">2 days ago</div> -->
             </div>
-        <% } %> 
+            <!-- <a class="btn btn-success my-2" id="btnCheckOut" onclick=drawOrder()>Check Out</a> -->
+        <% } %>
+
+
+        <div class="card text-center my-4 p-4 col-md-4" id="cardOrder" hidden="true">
+            <div class="card-header"><%= user.name %>'s Order</div>
+            <p><%= user.email %></p>
+
+            <form action="/notes/order/<%=user.id%>" method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+
+                    <input 
+                        type="text" 
+                        name="title"
+                        class="form-control"
+                        placeholder="Title"
+                        value = "Order"
+                        readonly="readonly"
+                    >
+                    <br>
+
+                    <!-- <label for="Textarea1" class="form-label">Additional details:</label> -->
+                    <textarea class="form-control" id="Textarea1" rows="10" name="ordertext"></textarea>
+
+                </div>    
+                <div class="d-grid gap-2 d-md-block mb-2">
+                    <button class="btn btn-success" type="submit">Send</button>
+                    <a class="btn btn-danger me-md-2" href="/notes">Cancel</a>
+                </div>    
+            </form>
+
+        </div>
 
     </div>
 </div>
 
 
-
+<!-- ============================================================================================================== -->
 <script>
     if(document.getElementById('btnCheckOut')){
         let btnCheckOut = document.getElementById('btnCheckOut')
         btnCheckOut.hidden = true
     }
+
     if(document.getElementById('btnEmptyCar')){
         let btnEmptyCar = document.getElementById('btnEmptyCar')
         btnEmptyCar.hidden = true
@@ -126,26 +189,53 @@
     let carrito = []
     let item = {}
     const container = document.querySelector(".row");
+
     container.addEventListener("click", (e) => {
-        //console.log(e.target.classList.contains('btn-add')) 
 
         //Agregar al carrito
-        if (e.target.classList.contains("btn-add")) {
+        document.getElementById('cardCart').hidden=false
+
+        // if (e.target.classList.contains("btn-add")) {
+        //     let itemId = e.target.id
+        //     let cartas = document.getElementsByClassName('carta')
+        //     for (let i = 0; i < cartas.length; i++) {
+        //         if (cartas[i].id == itemId){
+        //             let itemName = cartas[i].getElementsByClassName('card-body')[0].innerText
+        //             item.id = itemId
+        //             item.name = itemName
+        //             item.qty = 1
+        //             let existe = 0
+        //             for (let ii = 0; ii < carrito.length; ii++) {
+        //                 if(carrito[ii].id == item.id){
+        //                     existe = 1
+        //                     console.log('Item is already in the cart')
+        //                 }
+        //             }
+        //             if(existe == 0){
+        //                 carrito.push(item)
+        //                 item = {}
+        //             }                    
+        //         }
+        //     }
+        //     drawCart(carrito)
+        // }
+
+        if (e.target.classList.contains("btn-add-xs")) {
             let itemId = e.target.id
             let cartas = document.getElementsByClassName('carta')
             for (let i = 0; i < cartas.length; i++) {
                 if (cartas[i].id == itemId){
                     let itemName = cartas[i].getElementsByClassName('card-body')[0].innerText
-                    item.id = itemId
-                    item.name = itemName
+                    item.id = itemId + " [ XS ]"
+                    item.name = itemName + " [ XS ]"
                     item.qty = 1
                     let existe = 0
-                    for (let ii = 0; ii < carrito.length; ii++) {
-                        if(carrito[ii].id == item.id){
-                            existe = 1
-                            console.log('Item is already in the cart')
-                        }
-                    }
+                    // for (let ii = 0; ii < carrito.length; ii++) {
+                    //     if(carrito[ii].id == item.id){
+                    //         existe = 1
+                    //         console.log('Item is already in the cart')
+                    //     }
+                    // }
                     if(existe == 0){
                         carrito.push(item)
                         item = {}
@@ -154,6 +244,107 @@
             }
             drawCart(carrito)
         }
+
+        if (e.target.classList.contains("btn-add-s")) {
+            let itemId = e.target.id
+            let cartas = document.getElementsByClassName('carta')
+            for (let i = 0; i < cartas.length; i++) {
+                if (cartas[i].id == itemId){
+                    let itemName = cartas[i].getElementsByClassName('card-body')[0].innerText
+                    item.id = itemId + " [ S ]"
+                    item.name = itemName + " [ S ]"
+                    item.qty = 1
+                    let existe = 0
+                    // for (let ii = 0; ii < carrito.length; ii++) {
+                    //     if(carrito[ii].id == item.id){
+                    //         existe = 1
+                    //         console.log('Item is already in the cart')
+                    //     }
+                    // }
+                    if(existe == 0){
+                        carrito.push(item)
+                        item = {}
+                    }                    
+                }
+            }
+            drawCart(carrito)
+        }
+
+        if (e.target.classList.contains("btn-add-m")) {
+            let itemId = e.target.id
+            let cartas = document.getElementsByClassName('carta')
+            for (let i = 0; i < cartas.length; i++) {
+                if (cartas[i].id == itemId){
+                    let itemName = cartas[i].getElementsByClassName('card-body')[0].innerText
+                    item.id = itemId + " [ M ]"
+                    item.name = itemName + " [ M ]"
+                    item.qty = 1
+                    let existe = 0
+                    // for (let ii = 0; ii < carrito.length; ii++) {
+                    //     if(carrito[ii].id == item.id){
+                    //         existe = 1
+                    //         console.log('Item is already in the cart')
+                    //     }
+                    // }
+                    if(existe == 0){
+                        carrito.push(item)
+                        item = {}
+                    }                    
+                }
+            }
+            drawCart(carrito)
+        }
+
+        if (e.target.classList.contains("btn-add-l")) {
+            let itemId = e.target.id
+            let cartas = document.getElementsByClassName('carta')
+            for (let i = 0; i < cartas.length; i++) {
+                if (cartas[i].id == itemId){
+                    let itemName = cartas[i].getElementsByClassName('card-body')[0].innerText
+                    item.id = itemId + " [ L ]"
+                    item.name = itemName + " [ L ]"
+                    item.qty = 1
+                    let existe = 0
+                    // for (let ii = 0; ii < carrito.length; ii++) {
+                    //     if(carrito[ii].id == item.id){
+                    //         existe = 1
+                    //         console.log('Item is already in the cart')
+                    //     }
+                    // }
+                    if(existe == 0){
+                        carrito.push(item)
+                        item = {}
+                    }                    
+                }
+            }
+            drawCart(carrito)
+        }
+
+        if (e.target.classList.contains("btn-add-xl")) {
+            let itemId = e.target.id
+            let cartas = document.getElementsByClassName('carta')
+            for (let i = 0; i < cartas.length; i++) {
+                if (cartas[i].id == itemId){
+                    let itemName = cartas[i].getElementsByClassName('card-body')[0].innerText
+                    item.id = itemId + " [ XL ]"
+                    item.name = itemName + " [ XL ]"
+                    item.qty = 1
+                    let existe = 0
+                    // for (let ii = 0; ii < carrito.length; ii++) {
+                    //     if(carrito[ii].id == item.id){
+                    //         existe = 1
+                    //         console.log('Item is already in the cart')
+                    //     }
+                    // }
+                    if(existe == 0){
+                        carrito.push(item)
+                        item = {}
+                    }                    
+                }
+            }
+            drawCart(carrito)
+        }
+
 
         //Quitar del carrito
         if (e.target.classList.contains("btn-remove")) {
@@ -178,14 +369,14 @@
         }
         for (let i = 0; i < carrito.length; i++) {
             var row = table.insertRow(1);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3);
+            var cell1 = row.insertCell(0); //Product
+            var cell2 = row.insertCell(1); //Color
+            var cell3 = row.insertCell(2); //Quantity
+            var cell4 = row.insertCell(3); //Remove
             cell1.innerHTML = carrito[i].name
-            cell2.innerHTML = carrito[i].id
+            cell2.innerHTML = '<div><input type="color" id="color1" name="color1" value="#e66465"></div>'
             cell3.innerHTML = '<input type="number" value=1 min=1>' 
-            cell4.innerHTML = '<a class="btn btn-danger btn-remove" id="">Remove</a>'   
+            cell4.innerHTML = '<a class="btn btn-danger btn-remove" id="">Remove</a>' 
             cell4.querySelector('a').setAttribute("id", i) 
         }
 
@@ -198,6 +389,31 @@
             btnCheckOut.hidden = true
             btnEmptyCar.hidden = true
         }
+    }
+</script>
+
+<script>
+    function drawOrder(){
+        document.getElementById('navbar').hidden=true
+        document.getElementById('greeting').hidden=true
+        document.getElementById('cardOrder').hidden=false
+        let tableOrig = document.getElementById('table-cart')
+        let fil = tableOrig.rows.length
+        let textArea = document.getElementById('Textarea1')
+        let string = ''
+        for (let i = 1; i < fil; i++) {
+            string = string + (tableOrig.rows[i].cells[0].innerText)
+            string = string + ('. Color: ' + tableOrig.rows[i].cells[1].querySelector('input').value)
+            string = string + ('. Qty: ' + tableOrig.rows[i].cells[2].querySelector('input').value + '\n')
+        }
+        string = string + '\n' + 'Order placed on: ' + (Date().toLocaleString())
+        textArea.innerHTML = string
+        let cartas = document.getElementsByClassName('carta')
+        for (let i = 0; i < cartas.length; i++) {
+            cartas[i].hidden = true
+        }
+        // document.getElementById('cardCart').hidden=true
+        document.getElementById('cardCart').remove()
     }
 </script>
 

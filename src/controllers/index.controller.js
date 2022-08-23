@@ -11,4 +11,8 @@ indexCtrl.renderAbout = (req,res)=>{
     res.render('about.ejs')
 };
 
+indexCtrl.renderSignIn = (req,res)=>{
+    res.render('signin.ejs')
+};
+
 module.exports = indexCtrl;

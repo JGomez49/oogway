@@ -3,10 +3,16 @@
 
 const {Router} = require('express');
 const router = Router();
-const {renderIndex,renderAbout} = require('../controllers/index.controller');
+const {
+    renderIndex,
+    renderAbout,
+    renderSignIn,
+} = require('../controllers/index.controller');
 
 //views/partial/navigation para redireccionar la URL...
-router.get('/', renderIndex);
+// router.get('/', renderIndex);
+router.get('/', renderSignIn);
+
 router.get('/about', renderAbout);
 
 module.exports = router;

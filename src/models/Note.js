@@ -4,6 +4,9 @@ const {Schema, model} = require('mongoose');
 const NoteSchema = new Schema({
     title: {type: String, required: true},
     description: {type: String, required: true},
+    gender: {type: String},
+    cat1: {type: String},
+    cat2: {type: String},
     user: {type: String, required: true},
     filename: {type: String},
     path: {type: String},

@@ -19,19 +19,53 @@
                     <input 
                         type="text" 
                         name="title"
-                        class="form-control"
+                        class="form-control my-2"
                         placeholder="Title"
                         autofocus
                     >
-                    <br>
 
                     <textarea 
                         name="description" 
                         id="description" 
                         placeholder="Description"
-                        class="form-control"
+                        class="form-control my-2"
                     ></textarea>
-                    <br>
+
+                    
+                    <input class="form-control my-2" 
+                        list="datalistOptions1" 
+                        id="DataList1" 
+                        placeholder="Gender..."
+                    >
+                    <datalist id="datalistOptions1">
+                        <option value="Female">
+                        <option value="Male">
+                        <option value="Unisex">
+                    </datalist>
+
+
+                    <input class="form-control my-2" 
+                        list="datalistOptions2" 
+                        id="DataList2" 
+                        placeholder="Top/Bottoms..."
+                    >
+                    <datalist id="datalistOptions2">
+                        <option value="Top">
+                        <option value="Bottom">
+                        <option value="Full">
+                    </datalist>
+
+
+                    <input class="form-control my-2" 
+                        list="datalistOptions3" 
+                        id="DataList3" 
+                        placeholder="More Categories..."
+                    >
+                    <datalist id="datalistOptions3">
+                        <option value="Accesories">
+                        <option value="Pets">
+                    </datalist>
+
 
                     <div class="card mb-3" style="background-color: #483D8B;">
                         <div class="card-body">

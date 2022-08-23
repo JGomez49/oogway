@@ -30,6 +30,9 @@ notesCrtl.createNewNote = async(req,res)=>{
     const newNote = new Note({
         title: req.body.title,
         description: req.body.description,
+        gender: req.body.gender,
+        cat1: req.body.cat1,
+        cat2: req.body.cat2,
         filename: req.file.filename,
         path: result.url,
         public_id: result.public_id,
@@ -62,6 +65,7 @@ notesCrtl.renderNotes = async (req,res)=>{
         console.log('>> obj usuario:')
         console.log(usuario)
         user.name = usuario.name
+        user.email = usuario.email
     }
     const notes = await Note.find().sort({createdAt: 'desc'});
     res.render('all-notes.ejs', {notes, user});
@@ -103,6 +107,19 @@ notesCrtl.deleteNote = async (req,res)=>{
     res.redirect('/notes');
 }
 
+notesCrtl.renderOrders = async (req,res)=>{
+    let user = {}
+        user.id = req.session.passport.user
+        let usuario = await User.findById(user.id);
+        console.log('>> obj usuario (orders):')
+        console.log(usuario)
+        user.name = usuario.name
+        user.email = usuario.email
+    const notes = await Note.find({title: 'Order'}).sort({createdAt: 'desc'});
+        console.log('>>> Notes (Orders):')
+        console.log(notes)
+    res.render('all-orders.ejs', {notes, user});
+};
 
 notesCrtl.renderOrder = async (req,res)=>{
     let id = req.params.id
@@ -112,11 +129,25 @@ notesCrtl.renderOrder = async (req,res)=>{
     res.render('order.ejs', {user})
 }
 
-notesCrtl.sendOrder = async (req,res)=>{
+notesCrtl.postOrder = async (req,res)=>{
     let id = req.params.id
     let user = await User.findById(id);
     console.log('>>> Order from user:')
     console.log(user)
+    console.log('>>> Order Text:')
+    console.log(req.body.ordertext)
+
+    const newNote = new Note({
+        title: req.body.title,
+        description: req.body.ordertext,
+        user: user,
+    });
+    //newNote.user = req.user.id;
+    await newNote.save();
+    req.flash('success_msg','Note (job) added successfully');
+    console.log('>> newNote (job):');
+    console.log(newNote);
+
     res.redirect('/notes');
 }
 

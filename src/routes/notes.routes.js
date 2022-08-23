@@ -9,8 +9,8 @@ const {
     renderEditForm,
     updateNote,
     deleteNote,
-    renderOrder,
-    sendOrder,
+    postOrder,
+    renderOrders,
 
 } = require('../controllers/notes.controller');
 
@@ -26,6 +26,7 @@ router.post('/notes/new-note', isAuthenticated, createNewNote);
 //Get all notes
 router.get('/notes', isAuthenticated, renderNotes);
 router.get('/notes/:guest', renderNotes);
+router.get('/orders', isAuthenticated, renderOrders);
 
 //Edit notes
     //Mostrar el formulario para editar
@@ -40,8 +41,8 @@ router.delete('/notes/delete/:id', isAuthenticated, deleteNote);
 
 
 // Send Order
-router.get('/notes/order/:id', renderOrder);
-router.post('/notes/order/:id', sendOrder);
+// router.get('/notes/order/:id', isAuthenticated, renderOrder);
+router.post('/notes/order/:id', isAuthenticated, postOrder);
 
 
 

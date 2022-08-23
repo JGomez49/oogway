@@ -1,47 +1,149 @@
 
 <%- include ('partials/header.ejs') %>
-<%- include ('partials/navigation.ejs') %>
 
-<div class="row my-4">
-    <div class="col-md-3 mx-auto my-4">        
-        <div class="card bg-primary">
 
-            <div class="card-header bg-info">
-                <h4>Account Login</h4>
-            </div>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        cursor: crosshair;
+    }
 
-            <img src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659980382/Logo_Oogway_r7m6dv.png"
-                class="rounded-circle_ mx-auto d-block m-4" width="70%">
-                
-            <div class="card-body">
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1661196991/abWinter_xktxp4.jpg */
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1661195618/fondo3_t9erws.jpg */
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1661197510/abWinter2_edwfzk.jpg */
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1661197736/abWinter3_xwtvjk.jpg */
 
-                <form action="/users/signin" method="post">
+    #container-fall {
+        widows: 100%;
+        height: 100vh;
+        background-color: black;
+        background-image: url(https://res.cloudinary.com/metacortexjohn/image/upload/v1661195618/fondo3_t9erws.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+        filter: contrast(1);
+        overflow: hidden;
+    }
 
-                    <div class="form-group">
-                        <input type="email" class="form-control" name="email" placeholder="Email">
+    fall {
+        position: absolute;
+        border-radius: 50%;
+        top: -10px;
+        animation: hojas-fall linear infinite;
+        z-index: 10;
+        /* position: fixed; */
+    }
+
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1661196597/snowball_r0oq2g.png */
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1659989982/maple_cyl6xr.png */
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1661195614/hoja_k6zfuu.png */
+    /* https://res.cloudinary.com/metacortexjohn/image/upload/v1661197231/snowball2_ptf6oq.png */
+
+    @keyframes hojas-fall {
+        0% {
+            background-image: url(https://res.cloudinary.com/metacortexjohn/image/upload/v1659989982/maple_cyl6xr.png);
+            background-size: cover;
+            top: -10px;
+            transform: rotate(0deg) translateX(100px);
+            filter: hue-rotate(0deg) contrast(1);
+        }
+        20% {
+            filter: hue-rotate(60deg);
+        }
+        50% {
+            background-image: url(https://res.cloudinary.com/metacortexjohn/image/upload/v1659989982/maple_cyl6xr.png);
+            background-size: cover;
+            transform: rotate(180deg) translateX(-100px);
+        }
+        100% {
+            background-image: url(https://res.cloudinary.com/metacortexjohn/image/upload/v1659989982/maple_cyl6xr.png);
+            background-size: cover;
+            top: calc(100vh + 50px);
+            transform: rotate(360deg) translateX(200px);
+            filter: hue-rotate(0deg) contrast(1);
+        }
+    }
+</style>
+
+
+
+
+<div class="container-fall" id="container-fall">
+
+    <div class="fall"> 
+
+        <!-- <div class="row m-4"> -->
+
+            <div class="col-md-3 mx-auto my-4"> 
+
+                <div class="card bg-primary">
+
+                    <div class="card-header bg-info">
+                        <h4>Account Login</h4>
                     </div>
-                    <br>
 
-                    <div class="form-group">
-                        <input type="password" class="form-control" name="password" placeholder="Password">
+                    <img src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659980382/Logo_Oogway_r7m6dv.png"
+                        class="rounded-circle_ mx-auto d-block m-4" width="70%">
+                        
+                    <div class="card-body">
+
+                        <form action="/users/signin" method="post">
+
+                            <div class="form-group">
+                                <input type="email" class="form-control" name="email" placeholder="Email">
+                            </div>
+                            <br>
+
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="password" placeholder="Password">
+                            </div>
+                            <br>
+
+                            <button class="btn btn-success btn-block">
+                                OK
+                            </button>
+
+                            <a type="button" class="btn btn-info" href="/notes/guest">Enter as a Guest</a>
+
+                        </form>
+
                     </div>
-                    <br>
-
-                    <button class="btn btn-success btn-block">
-                        OK
-                    </button>
-
-                    <a type="button" class="btn btn-info" href="/notes/guest">Enter as a Guest</a>
-
-                </form>
-
+                </div>
             </div>
+        <!-- </div> -->
+
+        <div class="row my-4 col-md-3 mx-auto">
+            <img src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659989982/maple_cyl6xr.png" style="height: 30%; width:30% ">
         </div>
+
     </div>
 </div>
 
-<div class="row my-4 col-md-3 mx-auto">
-    <img src="https://res.cloudinary.com/metacortexjohn/image/upload/v1659989982/maple_cyl6xr.png" style="height: 30%; width:30% ">
-</div>
+
+
+<script>
+    const Hfall = document.querySelector("#container-fall");
+    const crearHojasfall = () => {
+        let hojasfall = document.createElement('fall');
+        let x = innerWidth * Math.random();
+        let size = (Math.random() * 30) + 2;
+        let z = Math.random(Math.random()) * 100;
+        let delay = Math.random() * 5;
+        let duration = (Math.random() * 10) + 5;
+        hojasfall.style.left = x + 'px'
+        hojasfall.style.width = size + 'px'
+        hojasfall.style.height = size + 'px'
+        hojasfall.style.zIndex = z
+        hojasfall.style.animationDelay = delay + 's'
+        hojasfall.style.animationDuration = duration + 's'
+        Hfall.appendChild(hojasfall);
+        /* para que no se sature */
+        setTimeout(() => {
+            hojasfall.remove();
+        }, duration * 1000);
+    }
+    setInterval(crearHojasfall, 100);
+</script>
 
 <%- include ('partials/footer.ejs') %>
